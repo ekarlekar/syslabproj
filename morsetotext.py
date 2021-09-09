@@ -1,7 +1,8 @@
 import requests
 from requests.exceptions import HTTPError
 from gtts import gTTS
-from playsound import playsound
+import os
+
 def morseToText(morse_string):
 
 	url = 'http://www.morsecode-api.de/decode?string=' + morse_string
@@ -31,7 +32,7 @@ def toMorseFormat(morse_list):
 def textToSpeech(text_string, language): # can support English, Hindi, Tamil, French, and German 
 	myobj = gTTS(text=text_string, lang=language, slow=False)
 	myobj.save("texttospeech.mp3")
-	#playsound("texttospeech.mp3")
+	os.system('afplay texttospeech.mp3')
 
 morse_list = [[['.','.','.','.'], ['.'], ['.', '-', '.', '.'], ['.', '-', '.', '.'], ['-','-','-']],[['.', '-', '-'], ['-','-','-'], ['.','-','.'], ['.','-','.','.'], ['-','.','.']]] # hello world
 

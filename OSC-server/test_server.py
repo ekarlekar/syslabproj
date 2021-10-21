@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
   client = udp_client.SimpleUDPClient(args.ip, args.port)
 
-  for x in range(10):
-    client.send_message("/filter", random.random())
+  for x in range(5):
+    client.send_message("/base", "hi atin")
+    client.send_message("/base2", "bye atin")
     time.sleep(1)

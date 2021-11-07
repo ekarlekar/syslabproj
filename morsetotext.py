@@ -5,6 +5,8 @@ import os
 from tkinter import *
 from tkinter import ttk
 from functools import partial
+import time
+import numpy
 
 def toMorseFormat(morse_list):
 	'''
@@ -106,11 +108,46 @@ def morseToSpeech(morse_list):
 
 	return text, morse_string
 	print(text)
-def display(root, text, language, morse_string):
+
+def display_connected(root, frm, is_connected):
+	is_connected = "   Connected    "
+	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
+
+def update_label(root, to_display):
+	l_r.set(to_display)
+
+def start_button(root, frm, morse_list):
+
+	
+	l_r = StringVar()
+	l_r.set("hello")
+	left_or_right = ttk.Label(frm, textvariable=l_r)
+	left_or_right.grid(column=0, row=9)
+	new_list = list(numpy.concatenate(list(numpy.concatenate(morse_list).flat)).flat)
+	to_display = ""
+	for x in new_list:
+		print(x)
+		if x == '.':
+			to_display = "Left Blink"
+		if x == '-':
+			to_display = "Right Blink"
+		print("smtn happening")
+		left_or_right.configure(text = to_display)
+		# left_or_right.after(1000, partial(update_label, to_display))
+		time.sleep(2)
+
+def display_translation(root, frm, text, morse_string):
+	ttk.Label(frm, text=text).grid(column=0, row=11)
+	ttk.Label(frm, text="Morse Code (from blinks): "+morse_string).grid(column=0, row=11)
+	ttk.Label(frm, text="English Translation: "+text).grid(column=0, row=12)
+def show_translating(root, frm):
+	ttk.Label(frm, text="Translating...").grid(column=0, row=9)
+def display(root, text, language, morse_string, morse_list):
 	logo = PhotoImage(file='logologo.png')
 	logo = logo.zoom(10) #with 250, I ended up running out of memory
 	logo = logo.subsample(30)
 	play = PhotoImage(file='playbutton.png')
+	is_connected = "Not Connected"
 	#play = play.zoom(10) #with 250, I ended up running out of memory
 	play = play.subsample(30)
 	morse_string = morse_string.replace('/', '')
@@ -118,14 +155,21 @@ def display(root, text, language, morse_string):
 	frm = ttk.Frame(root, padding=10)
 	frm.grid()
 	ttk.Label(frm, image=logo).grid(column=0, row=0)
-	ttk.Label(frm, text="Morse Code (from blinks): "+morse_string).grid(column=0, row=2)
-	ttk.Label(frm, text="English Translation: "+text).grid(column=0, row=3)
 	frm1 = ttk.Frame(frm, padding=1)
-	ttk.Button(frm, text="Play Sound", width=10, command=partial(textToSpeech, text, language)).grid(column=0, row=4)
-	ttk.Button(frm, text="Quit", width=10, command=root.destroy).grid(column=0, row=5)
+	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
+	ttk.Button(frm, text="Play Sound", width=10, command=partial(textToSpeech, text, language)).grid(column=0, row=14)
+	ttk.Button(frm, text="Quit", width=10, command=root.destroy).grid(column=0, row=15)
+	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected)).grid(column=0, row=6)
+	
+	ttk.Button(frm, text="Start Translation", command=partial(show_translating, root, frm)).grid(column=0, row=8)
 	root.mainloop()
 	return
-
+# connect to EEG
+# connected/not connected
+# make a start button
+# make an stop + translate button
+# left blink 	right blink
+# on click for end button makes the morse list pop up on screen, then text to voice goes
 def main():
 	root = Tk()
 	root.title('Blinks to Speech')
@@ -133,6 +177,6 @@ def main():
 	morse_list = [[['.','.','.','.'], ['.'], ['.', '-', '.', '.'], ['.', '-', '.', '.'], ['-','-','-']],[['.', '-', '-'], ['-','-','-'], ['.','-','.'], ['.','-','.','.'], ['-','.','.']]] # hello world
 	language = 'en'
 	text, morse_string = morseToSpeech(morse_list)
-	display(root, text, language, morse_string)
+	display(root, text, language, morse_string, morse_list)
 
 if __name__ == '__main__': main()

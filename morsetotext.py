@@ -162,6 +162,8 @@ def display(root, text, language, morse_string, morse_list):
 	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected)).grid(column=0, row=6)
 	
 	ttk.Button(frm, text="Start Translation", command=partial(show_translating, root, frm)).grid(column=0, row=8)
+	ttk.Button(frm, text="Stop and Translate", command=partial(display_translation, root, frm, text, morse_string)).grid(column=0, row=10)
+
 	root.mainloop()
 	return
 # connect to EEG

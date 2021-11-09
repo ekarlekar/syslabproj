@@ -28,6 +28,7 @@ def toMorseFormat(morse_list):
 
 
 	print(morse_string)
+	return morse_string
 def morseToText(morse_string):
 	'''
 	Take a formatted morse string as input and returns English translation.

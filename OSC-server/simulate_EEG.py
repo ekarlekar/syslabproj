@@ -64,4 +64,4 @@ if __name__ == "__main__":
     client.send_message("/met/cognitiveStress", random.random())
     client.send_message("/met/auditoryAttention", random.random())
 
-    time.sleep(10)
+    time.sleep(1)

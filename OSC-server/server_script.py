@@ -3,9 +3,23 @@ import math
 
 from pythonosc import dispatcher
 from pythonosc import osc_server
+# f = open("output.txt", "a")
 
 def print_volume_handler(unused_addr, args, volume):
   print("[{0}] ~ {1}".format(args[0], volume))
+
+def write_file_neutral(unused_addr, args):
+  f = open("output.txt", "a")
+  # f.write("\n")
+  f.write("neutral")
+  f.close()
+  print("got")
+
+def write_file_blink(unused_addr, args):
+  f = open("output.txt", "a")
+  f.write("\n")
+  f.write("blink")
+  f.close()
 
 def print_compute_handler(unused_addr, args, volume):
   try:
@@ -21,14 +35,14 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   dispatcher = dispatcher.Dispatcher()
-  dispatcher.map("/base", print)
-  dispatcher.map("/base2", print)
+  # dispatcher.map("/base", print)
+  # dispatcher.map("/base2", print)
 
   # Facial Expressions - Eyes
-  dispatcher.map("/fac/eyeAct/neutral", print)
+  dispatcher.map("/fac/eyeAct/neutral", write_file_neutral)
   # dispatcher.map("/fac/eyeAct/lookL", print)
   # dispatcher.map("/fac/eyeAct/lookR", print)
-  dispatcher.map("/fac/eyeAct/blink", print)
+  dispatcher.map("/fac/eyeAct/blink", write_file_blink)
   # dispatcher.map("/fac/eyeAct/winkL", print)
   # dispatcher.map("/fac/eyeAct/winkR", print)
 

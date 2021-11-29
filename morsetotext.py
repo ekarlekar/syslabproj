@@ -29,7 +29,6 @@ def toMorseFormat(morse_list):
 
 	print(morse_string)
 	return morse_string
-
 def morseToText(morse_string):
 	'''
 	Take a formatted morse string as input and returns English translation.
@@ -117,24 +116,45 @@ def update_label(root, to_display):
 	l_r.set(to_display)
 
 def start_button(root, frm, morse_list):
+	global txt, txt2, txt3
+	txt = ttk.Label(frm, text="Hello")
+	txt2 = ttk.Label(frm, text="Hello2")
+	txt3 = ttk.Label(frm, text="Hello3")
+	txt.grid(column=1, row=17)
+	txt2.grid(column=2, row=17)
+	txt3.grid(column=0, row=17)
+	display_blinks(root, frm, morse_list)
 
-	
-	l_r = StringVar()
-	l_r.set("hello")
-	left_or_right = ttk.Label(frm, textvariable=l_r)
-	left_or_right.grid(column=0, row=9)
+def display_blinks(root, frm, morse_list):
+	global txt, txt2, txt3
 	new_list = list(numpy.concatenate(list(numpy.concatenate(morse_list).flat)).flat)
-	to_display = ""
+	to_display = []
+	count = 0
 	for x in new_list:
-		print(x)
 		if x == '.':
-			to_display = "Left Blink"
+			to_display.append('l')
 		if x == '-':
-			to_display = "Right Blink"
-		print("smtn happening")
-		left_or_right.configure(text = to_display)
-		# left_or_right.after(1000, partial(update_label, to_display))
-		time.sleep(2)
+			to_display.append('r')
+	refresher(to_display,count, root)
+	print(to_display)
+def refresher(to_display, count, root):
+	global txt, txt2, txt3
+	count+=1
+	x = to_display[count]
+	if x == 'l':
+		txt.configure(text="Left Blink", font='Helvetica 18 bold')
+		txt2.configure(text="Right Blink", font='Helvetica 18 normal')
+		txt3.configure(text="Detected Blink #" + str(count)+":", font='Helvetica 18 normal')
+	elif x == 'r':
+		txt.configure(text="Left Blink", font='Helvetica 18 normal')
+		txt2.configure(text="Right Blink", font='Helvetica 18 bold')
+		txt3.configure(text="Detected Blink #" + str(count)+":", font='Helvetica 18 normal')
+	root.after(600, refresher, to_display, count, root)
+	# txt2.after(600, refresher, to_display, count, root)
+	# txt3.after(600, refresher, to_display, count, root)
+	if(count >= len(to_display)):
+		return
+
 
 def display_translation(root, frm, text, morse_string):
 	ttk.Label(frm, text=text).grid(column=0, row=11)
@@ -161,7 +181,7 @@ def display(root, text, language, morse_string, morse_list):
 	ttk.Button(frm, text="Quit", width=10, command=root.destroy).grid(column=0, row=15)
 	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected)).grid(column=0, row=6)
 	
-	ttk.Button(frm, text="Start Translation", command=partial(show_translating, root, frm)).grid(column=0, row=8)
+	ttk.Button(frm, text="Start Translation", command=partial(start_button, root, frm, morse_list)).grid(column=0, row=8)
 	ttk.Button(frm, text="Stop and Translate", command=partial(display_translation, root, frm, text, morse_string)).grid(column=0, row=10)
 
 	root.mainloop()

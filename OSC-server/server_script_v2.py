@@ -6,24 +6,20 @@ from pythonosc import dispatcher
 from pythonosc import osc_server
 
 def print_volume_handler(unused_addr, args, volume):
-  print("[{0}] ~ {1}".format(args[0], volume))
+    print("[{0}] ~ {1}".format(args[0], volume))
 
 def write_file_neutral(unused_addr, args):
-  f = open("output.txt", "a")
-  f.write("neutral")
-  f.close()
-  print("got")
+    open("output2.txt", "a").write("neutral\n")
+    print("got")
 
 def write_file_blink(unused_addr, args):
-  f = open("output.txt", "a")
-  f.write("\n")
-  f.write("blink")
-  f.close()
+    open("output2.txt", "a").write("blink\n")
+
 
 def print_compute_handler(unused_addr, args, volume):
-  try:
-    print("[{0}] ~ {1}".format(args[0], args[1](volume)))
-  except ValueError: pass
+    try:
+        print("[{0}] ~ {1}".format(args[0], args[1](volume)))
+    except ValueError: pass
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

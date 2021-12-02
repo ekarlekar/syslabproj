@@ -8,27 +8,6 @@ from functools import partial
 import time
 import numpy
 
-def toMorseFormat(morse_list):
-	'''
-	Take a morse list as input and returns a string able to be parsed.
-
-	Args:
-		morse_list (3-layer nested list): List of words containing a sublist of letters containing a sublist of symbols (dots and dashes).
-
-	'''
-	morse_string = ""
-	for word in morse_list:
-		for letter in word:
-			sing_letter = ''
-			for symbol in letter:
-				sing_letter += symbol
-			morse_string += sing_letter
-			morse_string+= "/" # slash between letters
-		morse_string+= "*" # asterisk between words
-
-
-	print(morse_string)
-	return morse_string
 def morseToText(morse_string):
 	'''
 	Take a formatted morse string as input and returns English translation.
@@ -67,14 +46,17 @@ def morseToText(morse_string):
 	'*': ' ',
 	'': '  '
 	}
-
 	split = morse_string.split('/')
 	translation = ""
 	for letter in split:
 		if '*' in letter:
-			translation += " "
-			letter = letter[1:]
-		translation+=translations[letter]
+			sub_split = letter.split('*')
+			translation+=translations[sub_split[0]]
+			translation+= " "
+			translation+=translations[sub_split[1]]
+		else:
+			translation+=translations[letter]
+	print(translation)
 	return translation
 
 
@@ -92,7 +74,7 @@ def textToSpeech(text_string, language):
 	myobj.save("texttospeech.mp3")
 	os.system('afplay texttospeech.mp3')
 
-def morseToSpeech(morse_list):
+def morseToSpeech(filename):
 	'''
 	Takes morse list as input and prints out and speaks aloud English translation.
 
@@ -102,20 +84,21 @@ def morseToSpeech(morse_list):
 		language (string): Language of desired output. In theory, can support English, Hindi, Tamil, French, and German but functionality needs to be added. English should be formatted as 'en'. To be passed into textToSpeech.
 
 	'''
-	morse_string = toMorseFormat(morse_list)
+	morse_string = create_morse_string(filename) #toMorseFormat(morse_list)
 	text = morseToText(morse_string)
 
 	return text, morse_string
 	print(text)
 
-def display_connected(root, frm, is_connected):
+def display_connected(root, frm, is_connected, morse_string):
 	is_connected = "   Connected    "
 	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
+	start_button(root, frm, morse_string)
 
 def update_label(root, to_display):
 	l_r.set(to_display)
 
-def start_button(root, frm, morse_list):
+def start_button(root, frm, morse_string):
 	global txt, txt2, txt3
 	txt = ttk.Label(frm, text="Hello")
 	txt2 = ttk.Label(frm, text="Hello2")
@@ -123,19 +106,18 @@ def start_button(root, frm, morse_list):
 	txt.grid(column=1, row=17)
 	txt2.grid(column=2, row=17)
 	txt3.grid(column=0, row=17)
-	display_blinks(root, frm, morse_list)
+	display_blinks(root, frm, morse_string)
 
-def display_blinks(root, frm, morse_list):
+def display_blinks(root, frm, morse_string):
 	global txt, txt2, txt3
-	new_list = list(numpy.concatenate(list(numpy.concatenate(morse_list).flat)).flat)
 	to_display = []
-	count = 0
-	for x in new_list:
+	for x in morse_string:
 		if x == '.':
 			to_display.append('l')
 		if x == '-':
 			to_display.append('r')
-	refresher(to_display,count, root)
+	count = 0
+	refresher(to_display, count, root)
 	print(to_display)
 def refresher(to_display, count, root):
 	global txt, txt2, txt3
@@ -154,6 +136,28 @@ def refresher(to_display, count, root):
 	# txt3.after(600, refresher, to_display, count, root)
 	if(count >= len(to_display)):
 		return
+		
+def create_morse_string(filename): # right now assuming look left is to signal between letters and look right is between words, we can change it to be for diff # of neutrals in between
+	morse_string = ""
+	with open(filename) as f:
+		for line in f:
+			expression = line.replace('/fac/eyeAct/', '').strip()
+			print(expression)
+			if expression == "winkL":
+				morse_string += '.'
+				print("hello")
+			if expression == "winkR":
+				morse_string += '-'
+				print("hello")
+			if expression == "lookL":
+				morse_string += '/' # slash between letters
+				print("hello")
+			if expression == "lookR":
+				morse_string += '*' # asterisk between words
+				print("hello")
+	print(morse_string)
+	return morse_string
+
 
 
 def display_translation(root, frm, text, morse_string):
@@ -162,7 +166,7 @@ def display_translation(root, frm, text, morse_string):
 	ttk.Label(frm, text="English Translation: "+text).grid(column=0, row=12)
 def show_translating(root, frm):
 	ttk.Label(frm, text="Translating...").grid(column=0, row=9)
-def display(root, text, language, morse_string, morse_list):
+def display(root, text, language, morse_string):
 	logo = PhotoImage(file='logologo.png')
 	logo = logo.zoom(10) #with 250, I ended up running out of memory
 	logo = logo.subsample(30)
@@ -179,9 +183,9 @@ def display(root, text, language, morse_string, morse_list):
 	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
 	ttk.Button(frm, text="Play Sound", width=10, command=partial(textToSpeech, text, language)).grid(column=0, row=14)
 	ttk.Button(frm, text="Quit", width=10, command=root.destroy).grid(column=0, row=15)
-	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected)).grid(column=0, row=6)
+	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected, morse_string)).grid(column=0, row=6)
 	
-	ttk.Button(frm, text="Start Translation", command=partial(start_button, root, frm, morse_list)).grid(column=0, row=8)
+	#ttk.Button(frm, text="Start Translation", command=partial(start_button, root, frm, morse_list)).grid(column=0, row=8)
 	ttk.Button(frm, text="Stop and Translate", command=partial(display_translation, root, frm, text, morse_string)).grid(column=0, row=10)
 
 	root.mainloop()
@@ -196,9 +200,15 @@ def main():
 	root = Tk()
 	root.title('Blinks to Speech')
 
-	morse_list = [[['.','.','.','.'], ['.'], ['.', '-', '.', '.'], ['.', '-', '.', '.'], ['-','-','-']],[['.', '-', '-'], ['-','-','-'], ['.','-','.'], ['.','-','.','.'], ['-','.','.']]] # hello world
+	# parse through txt file
+	#blinks = get_text_file("output4.txt")
+	# when u encounter winkL or winkR, add . or - appropriately
+
+	# decide how to distinguish between words
+
+	#morse_list = [[['.','.','.','.'], ['.'], ['.', '-', '.', '.'], ['.', '-', '.', '.'], ['-','-','-']],[['.', '-', '-'], ['-','-','-'], ['.','-','.'], ['.','-','.','.'], ['-','.','.']]] # hello world
 	language = 'en'
-	text, morse_string = morseToSpeech(morse_list)
-	display(root, text, language, morse_string, morse_list)
+	text, morse_string = morseToSpeech("output4.txt")
+	display(root, text, language, morse_string)
 
 if __name__ == '__main__': main()

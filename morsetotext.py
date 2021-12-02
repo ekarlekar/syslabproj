@@ -136,7 +136,7 @@ def refresher(to_display, count, root):
 	# txt3.after(600, refresher, to_display, count, root)
 	if(count >= len(to_display)):
 		return
-		
+
 def create_morse_string(filename): # right now assuming look left is to signal between letters and look right is between words, we can change it to be for diff # of neutrals in between
 	morse_string = ""
 	with open(filename) as f:
@@ -170,6 +170,9 @@ def display(root, text, language, morse_string):
 	logo = PhotoImage(file='logologo.png')
 	logo = logo.zoom(10) #with 250, I ended up running out of memory
 	logo = logo.subsample(30)
+	translations = PhotoImage(file='translations.png')
+	translations = translations.zoom(10) #with 250, I ended up running out of memory
+	translations = translations.subsample(30)
 	play = PhotoImage(file='playbutton.png')
 	is_connected = "Not Connected"
 	#play = play.zoom(10) #with 250, I ended up running out of memory
@@ -179,8 +182,10 @@ def display(root, text, language, morse_string):
 	frm = ttk.Frame(root, padding=10)
 	frm.grid()
 	ttk.Label(frm, image=logo).grid(column=0, row=0)
+	ttk.Label(frm, image=translations).grid(column=0, row=16)
 	frm1 = ttk.Frame(frm, padding=1)
 	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
+	ttk.Label(frm, text="Wink Left = dot (.) \nWink Right = dash (-) \nLook Left = new letter \nLook Right = new word").grid(column=0, row=17)
 	ttk.Button(frm, text="Play Sound", width=10, command=partial(textToSpeech, text, language)).grid(column=0, row=14)
 	ttk.Button(frm, text="Quit", width=10, command=root.destroy).grid(column=0, row=15)
 	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected, morse_string)).grid(column=0, row=6)
@@ -201,7 +206,7 @@ def main():
 	root.title('Blinks to Speech')
 
 	# parse through txt file
-	#blinks = get_text_file("output4.txt")
+
 	# when u encounter winkL or winkR, add . or - appropriately
 
 	# decide how to distinguish between words

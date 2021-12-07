@@ -9,16 +9,40 @@ def print_volume_handler(unused_addr, args, volume):
   print("[{0}] ~ {1}".format(args[0], volume))
 
 def write_file_neutral(unused_addr, args):
-  f = open("output.txt", "a")
+  f = open("output4.txt", "a")
   f.write("neutral")
   f.close()
   print("got")
 
 def write_file_blink(unused_addr, args):
-  f = open("output.txt", "a")
+  f = open("output4.txt", "a")
   f.write("\n")
   f.write("blink")
   f.close()
+
+def write_file_look_l(unused_addr, args):
+  f = open("output4.txt", "a")
+  f.write("\n")
+  f.write("lookL")
+  f.close()
+
+def write_file_look_r(unused_addr, args):
+  f = open("output4.txt", "a")
+  f.write("\n")
+  f.write("lookR")
+  f.close()
+
+def write_file_wink_l(unused_addr, args):
+  f = open("output4.txt", "a")
+  f.write("\n")
+  f.write("winkL")
+  f.close()
+def write_file_wink_r(unused_addr, args):
+  f = open("output4.txt", "a")
+  f.write("\n")
+  f.write("winkR")
+  f.close()
+
 
 def print_compute_handler(unused_addr, args, volume):
   try:
@@ -39,11 +63,11 @@ if __name__ == "__main__":
 
     # Facial Expressions - Eyes
     dispatcher.map("/fac/eyeAct/neutral", write_file_neutral)
-    # dispatcher.map("/fac/eyeAct/lookL", print)
-    # dispatcher.map("/fac/eyeAct/lookR", print)
+    dispatcher.map("/fac/eyeAct/lookL", write_file_look_l)
+    dispatcher.map("/fac/eyeAct/lookR", write_file_look_r)
     dispatcher.map("/fac/eyeAct/blink", write_file_blink)
-    # dispatcher.map("/fac/eyeAct/winkL", print)
-    # dispatcher.map("/fac/eyeAct/winkR", print)
+    dispatcher.map("/fac/eyeAct/winkL", write_file_wink_l)
+    dispatcher.map("/fac/eyeAct/winkR", write_file_wink_r)
 
     # # Facial Expressions - Upper Face
     # dispatcher.map("/fac/uAct/neutral", print)

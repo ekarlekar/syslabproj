@@ -10,10 +10,11 @@ def print_volume_handler(unused_addr, args, volume):
     print("[{0}] ~ {1}".format(args[0], volume))
 
 def write_file_neutral(unused_addr, args):
-    open("practice_demo.txt", "a").write(str(datetime.datetime.now()) + "---" + "neutral\n")
+    open("practice_demo1.txt", "a").write(str(datetime.datetime.now()) + "---" + "neutral\n")
 
 def write_file_blink(unused_addr, args):
-    open("practice_demo.txt", "a").write(str(datetime.datetime.now()) + "---" + "blink\n")
+    print('blink detected')
+    open("practice_demo1.txt", "a").write(str(datetime.datetime.now()) + "---" + "blink\n")
 
 
 def print_compute_handler(unused_addr, args, volume):

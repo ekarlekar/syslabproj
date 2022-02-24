@@ -96,13 +96,14 @@ def morseToSpeech(filename):
 	'''
 	morse_string = create_morse_string(filename) #toMorseFormat(morse_list)
 	text = morseToText(morse_string)
+
 	return text, morse_string
 	print(text)
 
-def display_connected(root, frm, is_connected, morse_string):
-	is_connected = "   Connected    "
+def display_connected(root, frm, is_connected):
+	is_connected = "   Connected - Start Blinking    "
 	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
-	start_button(root, frm, morse_string)
+	#start_button(root, frm, morse_string)
 
 def update_label(root, to_display):
 	l_r.set(to_display)
@@ -192,12 +193,55 @@ def display(root, text, language, morse_string):
 
 	root.mainloop()
 	return
+def first_display(root, language):
+	logo = PhotoImage(file='logologo.png')
+	logo = logo.zoom(10)
+	logo = logo.subsample(30)
+	translations = PhotoImage(file='translations.png')
+	translations = translations.zoom(10) 
+	translations = translations.subsample(30)
+	play = PhotoImage(file='playbutton.png')
+	is_connected = "Not Connected"
+	play = play.subsample(30)
+	# morse_string = morse_string.replace('/', '')
+	# morse_string = morse_string.replace('*', ' ')
+	frm = ttk.Frame(root, padding=10)
+	frm.grid()
+	ttk.Label(frm, image=logo).grid(column=0, row=0)
+	ttk.Label(frm, image=translations).grid(column=0, row=18)
+	frm1 = ttk.Frame(frm, padding=1)
+	ttk.Label(frm, text=is_connected).grid(column=0, row=7)
+	ttk.Label(frm, text="Wink Left = dot (.) \nWink Right = dash (-) \nLook Left = new letter \nLook Right = new word").grid(column=0, row=19)
+	#ttk.Button(frm, text="Play Sound", width=10, command=partial(textToSpeech, text, language)).grid(column=0, row=14)
+	ttk.Button(frm, text="Quit", width=10, command=root.destroy).grid(column=0, row=15)
+	ttk.Button(frm, text="Connect to EEG", command=partial(display_connected, root, frm, is_connected)).grid(column=0, row=6)
+	#ttk.Button(frm, text="Stop and Translate", command=partial(display_translation, root, frm, text, morse_string)).grid(column=0, row=10)
+	root.after(1000, )
+	root.mainloop()
+	return
+
+def follow(thefile):
+	thefile.seek(0,2)
+	while True:
+		line = thefile.readline()
+		if not line:
+			time.sleep(0.1)
+			continue
+		yield line
 
 def main():
 	root = Tk()
 	root.title('Blinks to Speech')
 	language = 'en'
-	text, morse_string = morseToSpeech("output.txt")
-	display(root, text, language, morse_string)
+	#display(root, text, language, morse_string)
+	logfile = open("output.txt","r")
+	loglines = follow(logfile)
+	#first_display(root, language)
+	for line in loglines:
+		if(line.strip() == "lookL" or line.strip() == "lookR"):
+			text, morse_string = morseToSpeech("output.txt")
+			print(text)
+			#display(root, text, language, morse_string)
+
 
 if __name__ == '__main__': main()

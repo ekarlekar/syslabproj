@@ -129,7 +129,7 @@ def main():
 	for line in loglines:
 		if(line.strip() == "lookL" or line.strip() == "lookR"):
 			text, morse_string = morseToSpeech("output.txt")
-			print(text)
-
+			with open('translated_output.txt', 'w') as f:
+				f.write(text)
 
 if __name__ == '__main__': main()

@@ -114,22 +114,23 @@ def create_morse_string(filename):
 
 
 def follow(thefile):
-	thefile.seek(0,2)
-	while True:
-		line = thefile.readline()
-		if not line:
-			time.sleep(0.1)
-			continue
-		yield line
+    thefile.seek(0,2)
+    while True:
+        line = thefile.readline()
+        if not line:
+            time.sleep(0.1)
+            continue
+        print(line)
+        yield line
 
 def main():
-	language = 'en'
-	logfile = open("output.txt","r")
-	loglines = follow(logfile)
-	for line in loglines:
-		if(line.strip() == "lookL" or line.strip() == "lookR"):
-			text, morse_string = morseToSpeech("output.txt")
-			with open('translated_output.txt', 'w') as f:
-				f.write(text)
+    language = 'en'
+    logfile = open("output.txt","r")
+    loglines = follow(logfile)
+    for line in loglines:
+        if(line.strip() == "lookL" or line.strip() == "lookR"):
+            text, morse_string = morseToSpeech("output.txt")
+            with open('flask_version/translated_output.txt', 'w') as f:
+                f.write(text)
 
 if __name__ == '__main__': main()

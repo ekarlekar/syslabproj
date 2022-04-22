@@ -5,6 +5,7 @@ from turbo_flask import Turbo
 import threading
 import time
 import random
+import os
 
 app = Flask(__name__)
 
@@ -14,17 +15,20 @@ turbo = Turbo(app)
 def main():
     return render_template("index.html")
 
-translation = 0
 @app.context_processor
 def inject_load():
-    translation = translation+1
+    with open('translated_output.txt', 'r') as f:
+        translation = f.readlines()[-1]
     return {'translation': translation}
 
 def update_load():
+    filename = "translated_output.txt"
     with app.app_context():
+        stamp = os.stat(filename).st_mtime
         while True:
-            time.sleep(5)
-            turbo.push(turbo.replace(render_template('loadtranslation.html'), 'load'))
+            if os.stat(filename).st_mtime != stamp:
+                turbo.push(turbo.replace(render_template('loadtranslation.html'), 'load'))
+                stamp = os.stat(filename).st_mtime
 
 @app.before_first_request
 def before_first_request():

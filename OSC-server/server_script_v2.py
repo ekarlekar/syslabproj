@@ -32,22 +32,21 @@ if __name__ == "__main__":
 
     dispatcher = dispatcher.Dispatcher()
     # dispatcher.map("/base", print)
-    # dispatcher.map("/base2", print)
 
     # Facial Expressions - Eyes
-    dispatcher.map("/fac/eyeAct/neutral", write_file_neutral)
-    # dispatcher.map("/fac/eyeAct/lookL", print)
-    # dispatcher.map("/fac/eyeAct/lookR", print)
-    dispatcher.map("/fac/eyeAct/blink", write_file_blink)
-    # dispatcher.map("/fac/eyeAct/winkL", print)
-    # dispatcher.map("/fac/eyeAct/winkR", print)
+    dispatcher.map("/fac/eyeAct/neutral", open("output.txt", "a").write("neutral\n"))
+    dispatcher.map("/fac/eyeAct/lookL", open("output.txt", "a").write("lookL\n"))
+    dispatcher.map("/fac/eyeAct/lookR", open("output.txt", "a").write("lookR\n"))
+    dispatcher.map("/fac/eyeAct/blink", open("output.txt", "a").write("blink\n"))
+    dispatcher.map("/fac/eyeAct/winkL", open("output.txt", "a").write("winkL\n"))
+    dispatcher.map("/fac/eyeAct/winkR", open("output.txt", "a").write("winkR\n"))
 
     # # Facial Expressions - Upper Face
     # dispatcher.map("/fac/uAct/neutral", print)
     # dispatcher.map("/fac/uAct/frown", print)
     # dispatcher.map("/fac/uAct/surprise", print)
 
-    # # Facial Expressions - LowerFace
+    # # Facial Expr essions - LowerFace
     # dispatcher.map("/fac/lAct/neutral", print)
     # dispatcher.map("/fac/lAct/clench", print)
     # dispatcher.map("/fac/lAct/laugh", print)

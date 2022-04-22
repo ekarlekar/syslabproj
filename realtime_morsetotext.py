@@ -234,7 +234,7 @@ def main():
 	root.title('Blinks to Speech')
 	language = 'en'
 	#display(root, text, language, morse_string)
-	logfile = open("output.txt","r")
+	logfile = open("OSC-server/output.txt","r")
 	loglines = follow(logfile)
 	#first_display(root, language)
 	for line in loglines:
